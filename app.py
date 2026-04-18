@@ -1,0 +1,66 @@
+import os
+from flask import Flask, render_template, request, jsonify
+import anthropic
+
+app = Flask(__name__)
+
+# =============================================
+# 시스템 프롬프트 (여기서 쉽게 수정 가능)
+# =============================================
+SYSTEM_PROMPT = """
+당신은 유아교육 현장의 저경력 교사를 지원하는 AI 코칭 전문가입니다.
+당신의 이름은 "토닥쌤" 입니다.
+교사가 유아의 문제행동 상황을 입력하면 아래 순서로 응답하세요:
+
+1단계 (상황 구체화): 언제, 어디서, 어떤 맥락에서 발생했는지 2~3가지 질문
+2단계 (원인 분석): 심리적 요인과 환경적 요인을 구분하여 분석
+3단계 (유사 사례): 비슷한 문제행동 실제 사례와 실제 지원 전략 2~3가지 제시
+4단계 (대응 전략): 구체적인 지도 방법과 교사 발화 예시 제안
+
+규칙:
+- 단정적으로 판단하지 말고 가능성을 열어두고 안내
+- 교사 발화는 반드시 큰따옴표로 예시 제공
+- 유아 발달 단계(만 2~3세)와 유아의 심리적, 환경적 요인을 고려한 현실적인 조언
+- 학부모 소통이 필요한 경우 전달 방법도 함께 안내
+- 만약 문제행동이 의료전문가의 도움이 필요한 상황이라면 어떤 전문가의 조언이 필요한지, 의료진과의 연계를 학부모에게 어떻게 전달할지 조언 제시
+
+말투 및 태도:
+- 항상 한국어로 답변합니다.
+- 저경력 교사가 위로받고 힘을 얻을 수 있는 따뜻하고 공감적인 말투를 사용합니다.
+- 적절한 이모지를 사용해 친근감을 높이되, 과하지 않게 합니다.
+- 교사를 절대 탓하지 않으며 함께 고민하는 동료의 느낌으로 안내합니다.
+- 답변이 길어질 경우 소제목(**굵게**)으로 구분하여 가독성을 높입니다.
+"""
+
+client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
+@app.route("/chat", methods=["POST"])
+def chat():
+    data = request.get_json()
+    user_message = data.get("message", "").strip()
+    history = data.get("history", [])
+
+    if not user_message:
+        return jsonify({"error": "메시지를 입력해주세요."}), 400
+
+    messages = history + [{"role": "user", "content": user_message}]
+
+    response = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=4096,
+        system=SYSTEM_PROMPT,
+        messages=messages,
+    )
+
+    reply = response.content[0].text
+    return jsonify({"reply": reply})
+
+
+if __name__ == "__main__":
+    app.run(debug=True, port=8080)

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>토닥쌤 — 유아 문제행동 코칭 챗봇</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+    :root {
+      --mint:      #b5ead7;
+      --mint-lt:   #e0f7ef;
+      --peach:     #ffd6c0;
+      --peach-dk:  #f4a47a;
+      --lavender:  #d4c5f9;
+      --yellow:    #fff1a8;
+      --sky:       #bde0fe;
+      --bg:        #f7f3ff;
+      --white:     #ffffff;
+      --text:      #3d3d3d;
+      --muted:     #a89ec0;
+      --radius:    20px;
+      --shadow:    0 6px 32px rgba(180,160,220,.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: linear-gradient(160deg, #e8f4ff 0%, #f7eefd 50%, #fff0e8 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    /* ── 카드 ── */
+    .card {
+      width: 100%;
+      max-width: 760px;
+      height: 93vh;
+      background: var(--white);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 2px solid #ede3ff;
+    }
+
+    /* ── 헤더 ── */
+    header {
+      background: linear-gradient(90deg, #c9b8f5 0%, #b5e8d8 100%);
+      padding: 18px 26px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 헤더 장식 원 */
+    header::before {
+      content: '';
+      position: absolute;
+      right: -30px; top: -30px;
+      width: 110px; height: 110px;
+      background: rgba(255,255,255,.18);
+      border-radius: 50%;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      right: 60px; bottom: -20px;
+      width: 70px; height: 70px;
+      background: rgba(255,255,255,.13);
+      border-radius: 50%;
+    }
+
+    .avatar {
+      width: 56px; height: 56px;
+      background: var(--white);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem;
+      flex-shrink: 0;
+      box-shadow: 0 3px 10px rgba(0,0,0,.10);
+    }
+
+    .header-text h1 { font-size: 1.12rem; font-weight: 700; color: #4a3f6b; }
+    .header-text p  { font-size: 0.77rem; color: #6a5e8a; margin-top: 3px; }
+
+    .header-emoji {
+      margin-left: auto;
+      font-size: 1.3rem;
+      letter-spacing: 5px;
+      opacity: .8;
+      z-index: 1;
+    }
+
+    /* ── 태그 배너 ── */
+    .tags {
+      background: #faf7ff;
+      padding: 10px 20px;
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      border-bottom: 1.5px solid #ede3ff;
+      flex-shrink: 0;
+    }
+
+    .tag {
+      background: var(--white);
+      border: 1.5px solid #d4c5f9;
+      color: #6a5e8a;
+      font-size: 0.73rem;
+      font-weight: 500;
+      border-radius: 20px;
+      padding: 4px 12px;
+      cursor: pointer;
+      transition: all .18s;
+      white-space: nowrap;
+    }
+    .tag:hover {
+      background: var(--lavender);
+      border-color: #b8a8e8;
+      color: #4a3f6b;
+    }
+
+    /* ── 채팅 창 ── */
+    #chat-window {
+      flex: 1;
+      overflow-y: auto;
+      padding: 22px 22px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scroll-behavior: smooth;
+    }
+
+    #chat-window::-webkit-scrollbar { width: 5px; }
+    #chat-window::-webkit-scrollbar-thumb {
+      background: #d4c5f9; border-radius: 4px;
+    }
+
+    /* ── 메시지 행 ── */
+    .row { display: flex; align-items: flex-end; gap: 9px; }
+    .row.user { justify-content: flex-end; }
+    .row.bot  { justify-content: flex-start; }
+
+    .mini-avatar {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #c9b8f5, #b5e8d8);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,.08);
+    }
+
+    /* ── 말풍선 ── */
+    .bubble {
+      max-width: 72%;
+      padding: 13px 17px;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      line-height: 1.78;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .bubble.user {
+      background: linear-gradient(135deg, #c9b8f5, #a78bdf);
+      color: #fff;
+      border-bottom-right-radius: 5px;
+      box-shadow: 0 3px 12px rgba(167,139,223,.30);
+    }
+
+    .bubble.bot {
+      background: #faf7ff;
+      color: var(--text);
+      border: 1.5px solid #ede3ff;
+      border-bottom-left-radius: 5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.05);
+    }
+
+    .bubble.bot strong { color: #7c5cbf; }
+
+    /* ── 타이핑 애니메이션 ── */
+    .typing { padding: 14px 18px !important; }
+    .typing span {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      margin: 0 2px;
+      animation: dotBounce 1s infinite;
+    }
+    .typing span:nth-child(1) { background: #c9b8f5; }
+    .typing span:nth-child(2) { background: #b5e8d8; animation-delay: .2s; }
+    .typing span:nth-child(3) { background: #ffd6c0; animation-delay: .4s; }
+
+    @keyframes dotBounce {
+      0%,80%,100% { transform: translateY(0) scale(1); }
+      40%          { transform: translateY(-8px) scale(1.1); }
+    }
+
+    /* ── 웰컴 카드 ── */
+    .welcome-card {
+      background: linear-gradient(135deg, #faf7ff, #f0fbf6);
+      border: 1.5px dashed #d4c5f9;
+      border-radius: 20px;
+      padding: 30px 28px;
+      text-align: center;
+      color: #6a5e8a;
+    }
+
+    .welcome-card .emoji-row {
+      font-size: 1.9rem;
+      letter-spacing: 6px;
+      margin-bottom: 14px;
+    }
+
+    .welcome-card h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #7c5cbf;
+      margin-bottom: 10px;
+    }
+
+    .welcome-card p {
+      font-size: 0.84rem;
+      line-height: 1.85;
+      color: #8a7aaa;
+    }
+
+    .welcome-card .tip {
+      margin-top: 16px;
+      background: var(--white);
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 0.80rem;
+      color: #a08cc0;
+      border: 1px solid #ede3ff;
+    }
+
+    /* ── 입력 영역 ── */
+    .input-area {
+      padding: 13px 18px 17px;
+      border-top: 1.5px solid #ede3ff;
+      background: #faf7ff;
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      flex-shrink: 0;
+    }
+
+    textarea {
+      flex: 1;
+      resize: none;
+      border: 2px solid #d4c5f9;
+      border-radius: 16px;
+      padding: 11px 16px;
+      font-size: 0.90rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      max-height: 140px;
+      min-height: 48px;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--white);
+    }
+
+    textarea::placeholder { color: #c0b0d8; }
+    textarea:focus {
+      border-color: #a78bdf;
+      box-shadow: 0 0 0 3px rgba(167,139,223,.15);
+    }
+
+    .send-btn {
+      background: linear-gradient(135deg, #c9b8f5, #a78bdf);
+      border: none;
+      border-radius: 50%;
+      width: 48px; height: 48px;
+      flex-shrink: 0;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 14px rgba(167,139,223,.40);
+      transition: transform .15s, opacity .15s;
+    }
+    .send-btn:hover   { transform: scale(1.08); }
+    .send-btn:active  { transform: scale(.95); }
+    .send-btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+    .send-btn svg { width: 20px; height: 20px; fill: #fff; }
+
+    /* ── 하단 안내 텍스트 ── */
+    .footer-note {
+      text-align: center;
+      font-size: 0.70rem;
+      color: #c0b0d8;
+      padding-bottom: 6px;
+      flex-shrink: 0;
+      background: #faf7ff;
+    }
+
+    @media (max-width: 520px) {
+      .card { height: 100vh; border-radius: 0; }
+      .bubble { max-width: 86%; }
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+
+  <!-- 헤더 -->
+  <header>
+    <div class="avatar">🌱</div>
+    <div class="header-text">
+      <h1>토닥쌤</h1>
+      <p>유아 문제행동 코칭 AI · 저경력 교사 전용 상담</p>
+    </div>
+    <div class="header-emoji">🧡🌿💛</div>
+  </header>
+
+  <!-- 빠른 질문 태그 -->
+  <div class="tags">
+    <span class="tag" onclick="fillTag('친구를 자꾸 때려요')">🤜 공격 행동</span>
+    <span class="tag" onclick="fillTag('등원할 때 심하게 울어요')">😭 등원 거부</span>
+    <span class="tag" onclick="fillTag('밥을 전혀 먹지 않아요')">🍽️ 식이 거부</span>
+    <span class="tag" onclick="fillTag('이유 없이 자꾸 울고 떼를 써요')">😤 떼쓰기</span>
+    <span class="tag" onclick="fillTag('낮잠을 전혀 자지 않아요')">😴 수면 거부</span>
+    <span class="tag" onclick="fillTag('친구들과 전혀 어울리지 않아요')">👫 또래 어려움</span>
+    <span class="tag" onclick="fillTag('머리를 바닥에 박거나 자해해요')">🆘 자해 행동</span>
+    <span class="tag" onclick="fillTag('교사 지시를 전혀 따르지 않아요')">🚫 지시 거부</span>
+  </div>
+
+  <!-- 채팅 창 -->
+  <div id="chat-window">
+    <div class="welcome-card" id="welcome">
+      <div class="emoji-row">🌷🧒💛🌿🤍</div>
+      <h2>안녕하세요, 저는 토닥쌤이에요!</h2>
+      <p>
+        교실에서 혼자 고민하고 계셨나요? 🥲<br>
+        아이의 행동이 이해되지 않아 막막할 때,<br>
+        토닥쌤이 함께 생각해 드릴게요.<br><br>
+        상황을 말씀해 주시면<br>
+        <strong>원인 분석 → 유사 사례 → 대응 전략</strong>까지<br>
+        단계별로 코칭해 드릴게요 🌱
+      </p>
+      <div class="tip">
+        💡 위 태그를 눌러 빠르게 시작하거나, 직접 상황을 설명해 주세요!
+      </div>
+    </div>
+  </div>
+
+  <!-- 입력 영역 -->
+  <div class="input-area">
+    <textarea
+      id="user-input"
+      placeholder="오늘 교실에서 있었던 상황을 편하게 적어주세요 🌿"
+      rows="1"
+    ></textarea>
+    <button class="send-btn" id="send-btn" onclick="sendMessage()" title="전송">
+      <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
+  </div>
+  <div class="footer-note">토닥쌤의 답변은 참고용이며, 심각한 상황은 전문가와 상담하세요 🌸</div>
+
+</div>
+
+<script>
+  const chatWindow = document.getElementById('chat-window');
+  const inputEl    = document.getElementById('user-input');
+  const sendBtn    = document.getElementById('send-btn');
+  let history      = [];
+  let welcomeShown = true;
+
+  function fillTag(text) {
+    inputEl.value = text;
+    inputEl.focus();
+    autoResize();
+  }
+
+  inputEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+  inputEl.addEventListener('input', autoResize);
+
+  function autoResize() {
+    inputEl.style.height = '48px';
+    inputEl.style.height = Math.min(inputEl.scrollHeight, 140) + 'px';
+  }
+
+  function removeWelcome() {
+    if (welcomeShown) {
+      const w = document.getElementById('welcome');
+      if (w) w.remove();
+      welcomeShown = false;
+    }
+  }
+
+  function addBubble(text, role) {
+    removeWelcome();
+    const row = document.createElement('div');
+    row.className = `row ${role}`;
+
+    if (role === 'bot') {
+      const av = document.createElement('div');
+      av.className = 'mini-avatar';
+      av.textContent = '🌱';
+      row.appendChild(av);
+    }
+
+    const bbl = document.createElement('div');
+    bbl.className = `bubble ${role}`;
+    bbl.innerHTML = formatText(text);
+    row.appendChild(bbl);
+
+    chatWindow.appendChild(row);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+    return bbl;
+  }
+
+  function addTyping() {
+    removeWelcome();
+    const row = document.createElement('div');
+    row.className = 'row bot';
+    row.id = 'typing-row';
+
+    const av = document.createElement('div');
+    av.className = 'mini-avatar';
+    av.textContent = '🌱';
+    row.appendChild(av);
+
+    const bbl = document.createElement('div');
+    bbl.className = 'bubble bot typing';
+    bbl.innerHTML = '<span></span><span></span><span></span>';
+    row.appendChild(bbl);
+
+    chatWindow.appendChild(row);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+    return row;
+  }
+
+  function formatText(text) {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n/g, '<br>');
+  }
+
+  async function sendMessage() {
+    const message = inputEl.value.trim();
+    if (!message || sendBtn.disabled) return;
+
+    inputEl.value = '';
+    autoResize();
+    sendBtn.disabled = true;
+
+    addBubble(message, 'user');
+    history.push({ role: 'user', content: message });
+
+    const typingRow = addTyping();
+
+    try {
+      const res = await fetch('/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, history: history.slice(0, -1) }),
+      });
+
+      const data = await res.json();
+      typingRow.remove();
+
+      if (data.error) {
+        addBubble('오류가 발생했어요 😢 잠시 후 다시 시도해 주세요.', 'bot');
+      } else {
+        addBubble(data.reply, 'bot');
+        history.push({ role: 'assistant', content: data.reply });
+      }
+    } catch {
+      typingRow.remove();
+      addBubble('서버 연결에 실패했어요. 잠시 후 다시 시도해 주세요 🌿', 'bot');
+    }
+
+    sendBtn.disabled = false;
+    inputEl.focus();
+  }
+</script>
+</body>
+</html>
