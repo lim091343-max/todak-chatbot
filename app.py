@@ -1,4 +1,5 @@
 import os
+import threading
 from flask import Flask, render_template, request, jsonify
 import anthropic
 
@@ -47,15 +48,29 @@ def chat():
 
         messages = history + [{"role": "user", "content": user_message}]
 
-        with client.messages.stream(
-            model="claude-sonnet-4-6",
-            max_tokens=4096,
-            system=SYSTEM_PROMPT,
-            messages=messages,
-        ) as stream:
-            reply = stream.get_final_text()
+        result = {}
+        def call_api():
+            try:
+                response = client.messages.create(
+                    model="claude-haiku-4-5-20251001",
+                    max_tokens=2048,
+                    system=SYSTEM_PROMPT,
+                    messages=messages,
+                )
+                result["reply"] = response.content[0].text
+            except Exception as e:
+                result["error"] = str(e)
 
-        return jsonify({"reply": reply})
+        t = threading.Thread(target=call_api)
+        t.start()
+        t.join(timeout=55)
+
+        if "reply" in result:
+            return jsonify({"reply": result["reply"]})
+        elif "error" in result:
+            return jsonify({"error": result["error"]}), 500
+        else:
+            return jsonify({"error": "응답 시간이 초과됐어요. 다시 시도해주세요."}), 504
 
     except Exception as e:
         print(f"Error: {e}")
