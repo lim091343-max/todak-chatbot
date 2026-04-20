@@ -1,4 +1,5 @@
-at ~/chatbot/requirements.txtimport os
+def chat
+import os
 from flask import Flask, render_template, request, jsonify
 import anthropic
 

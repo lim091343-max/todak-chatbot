@@ -4,9 +4,6 @@ import anthropic
 
 app = Flask(__name__)
 
-# =============================================
-# 시스템 프롬프트 (여기서 쉽게 수정 가능)
-# =============================================
 SYSTEM_PROMPT = """
 당신은 유아교육 현장의 저경력 교사를 지원하는 AI 코칭 전문가입니다.
 당신의 이름은 "토닥쌤" 입니다.
@@ -20,7 +17,7 @@ SYSTEM_PROMPT = """
 규칙:
 - 단정적으로 판단하지 말고 가능성을 열어두고 안내
 - 교사 발화는 반드시 큰따옴표로 예시 제공
-- 유아 발달 단계(만 2~3세)와 유아의 심리적, 환경적 요인을 고려한 현실적인 조언
+- 유아 발달 단계(만 3~5세)와 유아의 심리적, 환경적 요인을 고려한 현실적인 조언
 - 학부모 소통이 필요한 경우 전달 방법도 함께 안내
 - 만약 문제행동이 의료전문가의 도움이 필요한 상황이라면 어떤 전문가의 조언이 필요한지, 의료진과의 연계를 학부모에게 어떻게 전달할지 조언 제시
 
@@ -34,33 +31,35 @@ SYSTEM_PROMPT = """
 
 client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
-
 @app.route("/")
 def index():
     return render_template("index.html")
 
-
 @app.route("/chat", methods=["POST"])
 def chat():
-    data = request.get_json()
-    user_message = data.get("message", "").strip()
-    history = data.get("history", [])
+    try:
+        data = request.get_json()
+        user_message = data.get("message", "").strip()
+        history = data.get("history", [])
 
-    if not user_message:
-        return jsonify({"error": "메시지를 입력해주세요."}), 400
+        if not user_message:
+            return jsonify({"error": "메시지를 입력해주세요."}), 400
 
-    messages = history + [{"role": "user", "content": user_message}]
+        messages = history + [{"role": "user", "content": user_message}]
 
-    response = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=4096,
-        system=SYSTEM_PROMPT,
-        messages=messages,
-    )
+        with client.messages.stream(
+            model="claude-sonnet-4-6",
+            max_tokens=4096,
+            system=SYSTEM_PROMPT,
+            messages=messages,
+        ) as stream:
+            reply = stream.get_final_text()
 
-    reply = response.content[0].text
-    return jsonify({"reply": reply})
+        return jsonify({"reply": reply})
 
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
