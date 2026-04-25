@@ -35,7 +35,6 @@
       padding: 16px;
     }
 
-    /* ── 카드 ── */
     .card {
       width: 100%;
       max-width: 760px;
@@ -49,7 +48,6 @@
       border: 2px solid #ede3ff;
     }
 
-    /* ── 헤더 ── */
     header {
       background: linear-gradient(90deg, #c9b8f5 0%, #b5e8d8 100%);
       padding: 18px 26px 16px;
@@ -61,7 +59,6 @@
       overflow: hidden;
     }
 
-    /* 헤더 장식 원 */
     header::before {
       content: '';
       position: absolute;
@@ -100,7 +97,6 @@
       z-index: 1;
     }
 
-    /* ── 태그 배너 ── */
     .tags {
       background: #faf7ff;
       padding: 10px 20px;
@@ -129,7 +125,13 @@
       color: #4a3f6b;
     }
 
-    /* ── 채팅 창 ── */
+    .tag-hint {
+      width: 100%;
+      font-size: 0.72rem;
+      color: #b0a0cc;
+      padding: 2px 4px 4px;
+    }
+
     #chat-window {
       flex: 1;
       overflow-y: auto;
@@ -145,7 +147,6 @@
       background: #d4c5f9; border-radius: 4px;
     }
 
-    /* ── 메시지 행 ── */
     .row { display: flex; align-items: flex-end; gap: 9px; }
     .row.user { justify-content: flex-end; }
     .row.bot  { justify-content: flex-start; }
@@ -160,7 +161,6 @@
       box-shadow: 0 2px 6px rgba(0,0,0,.08);
     }
 
-    /* ── 말풍선 ── */
     .bubble {
       max-width: 72%;
       padding: 13px 17px;
@@ -188,8 +188,8 @@
 
     .bubble.bot strong { color: #7c5cbf; }
 
-    /* ── 타이핑 애니메이션 ── */
     .typing { padding: 14px 18px !important; }
+    .typing-content { display: flex; align-items: center; gap: 10px; }
     .typing span {
       display: inline-block;
       width: 8px; height: 8px;
@@ -200,13 +200,16 @@
     .typing span:nth-child(1) { background: #c9b8f5; }
     .typing span:nth-child(2) { background: #b5e8d8; animation-delay: .2s; }
     .typing span:nth-child(3) { background: #ffd6c0; animation-delay: .4s; }
+    .typing-text {
+      font-size: 0.78rem;
+      color: #a89ec0;
+    }
 
     @keyframes dotBounce {
       0%,80%,100% { transform: translateY(0) scale(1); }
       40%          { transform: translateY(-8px) scale(1.1); }
     }
 
-    /* ── 웰컴 카드 ── */
     .welcome-card {
       background: linear-gradient(135deg, #faf7ff, #f0fbf6);
       border: 1.5px dashed #d4c5f9;
@@ -245,7 +248,38 @@
       border: 1px solid #ede3ff;
     }
 
-    /* ── 입력 영역 ── */
+    .example-box {
+      margin-top: 14px;
+      background: #f3f0ff;
+      border-radius: 12px;
+      padding: 12px 16px;
+      text-align: left;
+      border: 1px solid #d4c5f9;
+    }
+
+    .example-box p {
+      font-size: 0.78rem;
+      color: #7c5cbf;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .example-box ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .example-box ul li {
+      font-size: 0.78rem;
+      color: #8a7aaa;
+      padding: 3px 0;
+      line-height: 1.6;
+    }
+
+    .example-box ul li::before {
+      content: '✏️ ';
+    }
+
     .input-area {
       padding: 13px 18px 17px;
       border-top: 1.5px solid #ede3ff;
@@ -296,7 +330,6 @@
 
     .send-btn svg { width: 20px; height: 20px; fill: #fff; }
 
-    /* ── 하단 안내 텍스트 ── */
     .footer-note {
       text-align: center;
       font-size: 0.70rem;
@@ -315,7 +348,6 @@
 <body>
 <div class="card">
 
-  <!-- 헤더 -->
   <header>
     <div class="avatar">🌱</div>
     <div class="header-text">
@@ -325,19 +357,19 @@
     <div class="header-emoji">🧡🌿💛</div>
   </header>
 
-  <!-- 빠른 질문 태그 -->
   <div class="tags">
-    <span class="tag" onclick="fillTag('친구를 자꾸 때려요')">🤜 공격 행동</span>
-    <span class="tag" onclick="fillTag('등원할 때 심하게 울어요')">😭 등원 거부</span>
-    <span class="tag" onclick="fillTag('밥을 전혀 먹지 않아요')">🍽️ 식이 거부</span>
+    <span class="tag" onclick="fillTag('기관에서 친구를 자꾸 때리거나 물어요')">🤜 공격 행동</span>
+    <span class="tag" onclick="fillTag('기관에 올 때마다 심하게 울고 분리가 안 돼요')">😭 분리불안</span>
+    <span class="tag" onclick="fillTag('기관에서 밥을 전혀 먹지 않아요')">🍽️ 식사 거부</span>
     <span class="tag" onclick="fillTag('이유 없이 자꾸 울고 떼를 써요')">😤 떼쓰기</span>
-    <span class="tag" onclick="fillTag('낮잠을 전혀 자지 않아요')">😴 수면 거부</span>
-    <span class="tag" onclick="fillTag('친구들과 전혀 어울리지 않아요')">👫 또래 어려움</span>
-    <span class="tag" onclick="fillTag('머리를 바닥에 박거나 자해해요')">🆘 자해 행동</span>
+    <span class="tag" onclick="fillTag('친구들과 전혀 어울리지 않고 혼자만 있어요')">👫 또래 갈등</span>
     <span class="tag" onclick="fillTag('교사 지시를 전혀 따르지 않아요')">🚫 지시 거부</span>
+    <span class="tag" onclick="fillTag('말이 또래보다 많이 늦는 것 같아요')">💬 언어 발달</span>
+    <span class="tag" onclick="fillTag('한 가지 활동에 집중을 전혀 못 해요')">🧩 집중 어려움</span>
+    <span class="tag" onclick="fillTag('머리를 바닥에 박거나 자해 행동을 해요')">🆘 자해 행동</span>
+    <div class="tag-hint">💡 태그를 눌러 빠르게 시작하거나, 아래에 직접 상황을 입력해 주세요!</div>
   </div>
 
-  <!-- 채팅 창 -->
   <div id="chat-window">
     <div class="welcome-card" id="welcome">
       <div class="emoji-row">🌷🧒💛🌿🤍</div>
@@ -350,17 +382,24 @@
         <strong>원인 분석 → 유사 사례 → 대응 전략</strong>까지<br>
         단계별로 코칭해 드릴게요 🌱
       </p>
+      <div class="example-box">
+        <p>✏️ 이렇게 입력해보세요!</p>
+        <ul>
+          <li>만 4세 남아인데 오늘 급식 시간에 숟가락을 던지고 밥을 먹지 않으려 했어요</li>
+          <li>등원할 때마다 엄마한테 매달려서 30분씩 울어요. 어떻게 해야 할지 모르겠어요</li>
+          <li>친구가 옆에 앉기만 해도 때리려고 해요. 오늘만 세 번 있었어요</li>
+        </ul>
+      </div>
       <div class="tip">
-        💡 위 태그를 눌러 빠르게 시작하거나, 직접 상황을 설명해 주세요!
+        💡 상황, 나이, 행동을 구체적으로 적을수록 더 정확한 코칭을 드릴 수 있어요!
       </div>
     </div>
   </div>
 
-  <!-- 입력 영역 -->
   <div class="input-area">
     <textarea
       id="user-input"
-      placeholder="오늘 교실에서 있었던 상황을 편하게 적어주세요 🌿"
+      placeholder="오늘 기관에서 있었던 상황을 편하게 적어주세요 🌿"
       rows="1"
     ></textarea>
     <button class="send-btn" id="send-btn" onclick="sendMessage()" title="전송">
@@ -440,7 +479,7 @@
 
     const bbl = document.createElement('div');
     bbl.className = 'bubble bot typing';
-    bbl.innerHTML = '<span></span><span></span><span></span>';
+    bbl.innerHTML = '<div class="typing-content"><span></span><span></span><span></span><span class="typing-text">잠시만 기다려주세요, 곧 답변드릴게요 💛</span></div>';
     row.appendChild(bbl);
 
     chatWindow.appendChild(row);
