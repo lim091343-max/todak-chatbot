@@ -175,7 +175,11 @@
     .typing span:nth-child(1) { background: #c9b8f5; }
     .typing span:nth-child(2) { background: #b5e8d8; animation-delay: .2s; }
     .typing span:nth-child(3) { background: #ffd6c0; animation-delay: .4s; }
-    .typing-text { font-size: 0.78rem; color: #a89ec0; }
+    .typing-text { font-size: 0.78rem; color: #a89ec0; white-space: nowrap; }
+    .progress-wrap { margin-top: 8px; }
+    .progress-bar-bg { background: #ede3ff; border-radius: 10px; height: 6px; width: 160px; overflow: hidden; }
+    .progress-bar-fill { background: linear-gradient(90deg, #c9b8f5, #a78bdf); height: 6px; border-radius: 10px; width: 0%; transition: width 0.5s ease; }
+    .progress-label { font-size: 0.72rem; color: #a89ec0; margin-top: 4px; }
     @keyframes dotBounce {
       0%,80%,100% { transform: translateY(0) scale(1); }
       40% { transform: translateY(-8px) scale(1.1); }
@@ -446,7 +450,7 @@
     row.appendChild(av);
     const bbl = document.createElement("div");
     bbl.className = "bubble bot typing";
-    bbl.innerHTML = "<div class=\"typing-content\"><span></span><span></span><span></span><span class=\"typing-text\">잠시만 기다려주세요, 곧 답변드릴게요 💛</span></div>";
+    bbl.innerHTML = "<div class=\"typing-content\"><span></span><span></span><span></span><span class=\"typing-text\">잠시만 기다려주세요, 곧 답변드릴게요 💛</span></div><div class=\"progress-wrap\"><div class=\"progress-bar-bg\"><div class=\"progress-bar-fill\" id=\"prog-fill\"></div></div><div class=\"progress-label\" id=\"prog-label\">0% 완료</div></div>";
     row.appendChild(bbl);
     chatWindow.appendChild(row);
     chatWindow.scrollTop = chatWindow.scrollHeight;
@@ -471,6 +475,17 @@
     addBubble(message, "user");
     history.push({ role: "user", content: message });
     const typingRow = addTyping();
+    let prog = 0;
+    const progFill = document.getElementById("prog-fill");
+    const progLabel = document.getElementById("prog-label");
+    const progInterval = setInterval(() => {
+      if (prog < 90) {
+        prog += Math.random() * 8;
+        if (prog > 90) prog = 90;
+        if (progFill) progFill.style.width = prog.toFixed(0) + "%";
+        if (progLabel) progLabel.textContent = prog.toFixed(0) + "% 완료";
+      }
+    }, 600);
     try {
       const res = await fetch("/chat", {
         method: "POST",
@@ -478,6 +493,7 @@
         body: JSON.stringify({ message, history: history.slice(0, -1) }),
       });
       const data = await res.json();
+      clearInterval(progInterval);
       typingRow.remove();
       if (data.error) {
         addBubble("오류가 발생했어요 😢 잠시 후 다시 시도해 주세요.", "bot");
