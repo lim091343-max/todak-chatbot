@@ -450,7 +450,7 @@
     row.appendChild(av);
     const bbl = document.createElement("div");
     bbl.className = "bubble bot typing";
-    bbl.innerHTML = "<div class=\"typing-content\"><span></span><span></span><span></span><span class=\"typing-text\">잠시만 기다려주세요, 곧 답변드릴게요 💛</span></div><div class=\"progress-wrap\"><div class=\"progress-bar-bg\"><div class=\"progress-bar-fill\" id=\"prog-fill\"></div></div><div class=\"progress-label\" id=\"prog-label\">0% 완료</div></div>";
+    bbl.innerHTML = "<div class=\"typing-text\">답변 출력중 ... 잠시만 기다려 주세요</div><div class=\"progress-wrap\"><div class=\"progress-bar-bg\"><div class=\"progress-bar-fill\" id=\"prog-fill\"></div></div><div class=\"progress-label\" id=\"prog-label\">0% 완료</div></div>";
     row.appendChild(bbl);
     chatWindow.appendChild(row);
     chatWindow.scrollTop = chatWindow.scrollHeight;
