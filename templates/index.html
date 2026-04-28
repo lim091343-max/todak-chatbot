@@ -142,6 +142,7 @@
     }
     .bubble {
       max-width: 72%;
+      min-width: 220px;
       padding: 13px 17px;
       border-radius: var(--radius);
       font-size: 0.9rem;
@@ -175,7 +176,7 @@
     .typing span:nth-child(1) { background: #c9b8f5; }
     .typing span:nth-child(2) { background: #b5e8d8; animation-delay: .2s; }
     .typing span:nth-child(3) { background: #ffd6c0; animation-delay: .4s; }
-    .typing-text { font-size: 0.78rem; color: #a89ec0; white-space: nowrap; flex: 1; }
+    .typing-text { font-size: 0.78rem; color: #a89ec0; white-space: nowrap; flex: 1; display: block; margin-top: 6px; }
     .progress-wrap { margin-top: 8px; width: 100%; }
     .progress-bar-bg { background: #ede3ff; border-radius: 10px; height: 6px; width: 100%; overflow: hidden; }
     .progress-bar-fill { background: linear-gradient(90deg, #c9b8f5, #a78bdf); height: 6px; border-radius: 10px; width: 0%; transition: width 0.5s ease; }
@@ -188,25 +189,26 @@
       background: linear-gradient(135deg, #faf7ff, #f0fbf6);
       border: 1.5px dashed #d4c5f9;
       border-radius: 20px;
-      padding: 30px 28px;
-      text-align: center;
+      padding: 24px 28px;
       color: #6a5e8a;
     }
-    .welcome-card .emoji-row { font-size: 1.9rem; letter-spacing: 6px; margin-bottom: 14px; }
-    .welcome-card h2 { font-size: 1.05rem; font-weight: 700; color: #7c5cbf; margin-bottom: 10px; }
-    .welcome-card p { font-size: 0.84rem; line-height: 1.85; color: #8a7aaa; }
+    .welcome-card .emoji-row { font-size: 1.9rem; letter-spacing: 6px; margin-bottom: 10px; text-align: center; }
+    .welcome-card h2 { font-size: 1.05rem; font-weight: 700; color: #7c5cbf; margin-bottom: 10px; text-align: center; }
+    .steps { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+    .step { border-radius: 10px; padding: 10px 14px; }
+    .step-title { font-weight: 700; font-size: 0.82rem; }
+    .step-desc { font-size: 0.78rem; margin-top: 4px; }
     .example-box {
       margin-top: 14px;
       background: var(--white);
       border-radius: 12px;
       padding: 12px 16px;
-      text-align: left;
       border: 1px solid #ede3ff;
     }
     .example-box p { font-size: 0.78rem; color: #7c5cbf; font-weight: 700; margin-bottom: 8px; }
     .example-box ul { list-style: none; padding: 0; }
     .example-box ul li { font-size: 0.78rem; color: #8a7aaa; padding: 3px 0; line-height: 1.6; }
-    .example-box ul li::before { content: "✏️ "; }
+    .example-box ul li::before { content: '✏️ '; }
     .tip {
       margin-top: 12px;
       background: #f3f0ff;
@@ -291,7 +293,6 @@
     <span class="tag" onclick="toggleSub(this, 'sub-peer')">👫 또래 어려움</span>
     <span class="tag" onclick="toggleSub(this, 'sub-self')">🆘 자해 행동</span>
     <span class="tag" onclick="toggleSub(this, 'sub-refuse')">🚫 지시 거부</span>
-
     <div class="subtags" id="sub-attack">
       <span class="subtag" onclick="fillTag('기관에서 친구를 이유 없이 때려요')">친구를 때려요</span>
       <span class="subtag" onclick="fillTag('기관에서 친구를 깨물어요')">친구를 깨물어요</span>
@@ -334,7 +335,6 @@
       <span class="subtag" onclick="fillTag('활동 전환이 될 때마다 거부해요')">전환을 거부해요</span>
       <span class="subtag" onclick="fillTag('규칙을 알면서도 일부러 어겨요')">규칙을 어겨요</span>
     </div>
-
     <div class="tag-hint">💡 태그를 눌러 빠르게 시작하거나, 아래에 직접 상황을 입력해 주세요!</div>
   </div>
 
@@ -342,14 +342,30 @@
     <div class="welcome-card" id="welcome">
       <div class="emoji-row">🌷🧒💛🌿🤍</div>
       <h2>안녕하세요, 저는 토닥쌤이에요!</h2>
-      <p>
-        교실에서 혼자 고민하고 계셨나요? 🥲<br>
-        아이의 행동이 이해되지 않아 막막할 때,<br>
-        토닥쌤이 함께 생각해 드릴게요.<br><br>
-        상황을 말씀해 주시면<br>
-        <strong>원인 분석 → 유사 사례 → 대응 전략</strong>까지<br>
-        단계별로 코칭해 드릴게요 🌱
+      <p style="font-size:0.84rem; color:#8a7aaa; line-height:1.85; margin-bottom:16px; text-align:center;">
+        토닥쌤은 유아교육 현장의 실제 사례와 발달심리학 연구를 기반으로<br>
+        문제행동을 분석하는 AI 코칭 도우미예요.<br><br>
+        단순한 AI 답변이 아닌, 유아 발달 이론과 현장 지원 전략 사례를 바탕으로<br>
+        선생님의 고민을 함께 풀어드려요 🌱
       </p>
+      <div class="steps">
+        <div class="step" style="background:#e8f8f0; border-left:4px solid #a8e6c8;">
+          <div class="step-title" style="color:#4caf80;">1단계 📋 상황 구체화</div>
+          <div class="step-desc" style="color:#6a8a78;">언제, 어디서, 어떤 맥락에서 발생했는지 2~3가지 질문드려요</div>
+        </div>
+        <div class="step" style="background:#d4f2e4; border-left:4px solid #7dd4a8;">
+          <div class="step-title" style="color:#3a9e6a;">2단계 🔍 원인 분석</div>
+          <div class="step-desc" style="color:#5a7a68;">심리적 요인과 환경적 요인을 구분하여 분석해 드려요</div>
+        </div>
+        <div class="step" style="background:#b8e8d0; border-left:4px solid #52c490;">
+          <div class="step-title" style="color:#2a8a58;">3단계 📚 유사 사례</div>
+          <div class="step-desc" style="color:#4a6a58;">비슷한 문제행동 실제 사례와 지원 전략 2~3가지를 알려드려요</div>
+        </div>
+        <div class="step" style="background:#8ed4b4; border-left:4px solid #2aaa70;">
+          <div class="step-title" style="color:#1a7a48;">4단계 💡 대응 전략</div>
+          <div class="step-desc" style="color:#3a5a48;">구체적인 지도 방법과 교사 발화 예시를 제안해 드려요</div>
+        </div>
+      </div>
       <div class="example-box">
         <p>✏️ 이렇게 입력해보세요!</p>
         <ul>
@@ -378,7 +394,6 @@
   const inputEl    = document.getElementById("user-input");
   const sendBtn    = document.getElementById("send-btn");
   let history      = [];
-  let welcomeShown = true;
 
   function toggleSub(el, subId) {
     const sub = document.getElementById(subId);
@@ -412,16 +427,7 @@
     inputEl.style.height = Math.min(inputEl.scrollHeight, 140) + "px";
   }
 
-  function removeWelcome() {
-    if (welcomeShown) {
-      const w = document.getElementById("welcome");
-      if (w) w.remove();
-      welcomeShown = false;
-    }
-  }
-
   function addBubble(text, role) {
-    removeWelcome();
     const row = document.createElement("div");
     row.className = "row " + role;
     if (role === "bot") {
@@ -440,7 +446,6 @@
   }
 
   function addTyping() {
-    removeWelcome();
     const row = document.createElement("div");
     row.className = "row bot";
     row.id = "typing-row";
@@ -450,7 +455,7 @@
     row.appendChild(av);
     const bbl = document.createElement("div");
     bbl.className = "bubble bot typing";
-    bbl.innerHTML = "<div class=\"typing-text\">답변 출력중 ... 잠시만 기다려 주세요</div><div class=\"progress-wrap\"><div class=\"progress-bar-bg\"><div class=\"progress-bar-fill\" id=\"prog-fill\"></div></div><div class=\"progress-label\" id=\"prog-label\">0% 완료</div></div>";
+    bbl.innerHTML = '<div class="typing-content"><span></span><span></span><span></span><span class="typing-text">답변 출력중 ... 잠시만 기다려 주세요</span></div><div class="progress-wrap"><div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-fill"></div></div><div class="progress-label" id="prog-label">0% 완료</div></div>';
     row.appendChild(bbl);
     chatWindow.appendChild(row);
     chatWindow.scrollTop = chatWindow.scrollHeight;
@@ -502,6 +507,7 @@
         history.push({ role: "assistant", content: data.reply });
       }
     } catch {
+      clearInterval(progInterval);
       typingRow.remove();
       addBubble("서버 연결에 실패했어요. 잠시 후 다시 시도해 주세요 🌿", "bot");
     }
