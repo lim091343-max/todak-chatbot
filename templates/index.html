@@ -164,7 +164,7 @@
     }
     .bubble.bot strong { color: #7c5cbf; }
     .typing { padding: 14px 18px !important; }
-    .typing-content { display: flex; align-items: center; gap: 10px; }
+    .typing-content { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .typing span {
       display: inline-block;
       width: 8px; height: 8px;
@@ -175,7 +175,7 @@
     .typing span:nth-child(1) { background: #c9b8f5; }
     .typing span:nth-child(2) { background: #b5e8d8; animation-delay: .2s; }
     .typing span:nth-child(3) { background: #ffd6c0; animation-delay: .4s; }
-    .typing-text { font-size: 0.78rem; color: #a89ec0; white-space: nowrap; }
+    .typing-text { font-size: 0.78rem; color: #a89ec0; white-space: nowrap; flex: 1; }
     .progress-wrap { margin-top: 8px; width: 100%; }
     .progress-bar-bg { background: #ede3ff; border-radius: 10px; height: 6px; width: 100%; overflow: hidden; }
     .progress-bar-fill { background: linear-gradient(90deg, #c9b8f5, #a78bdf); height: 6px; border-radius: 10px; width: 0%; transition: width 0.5s ease; }
