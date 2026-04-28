@@ -142,7 +142,7 @@
     }
     .bubble {
       max-width: 72%;
-      min-width: 280px;
+      min-width: 220px;
       padding: 13px 17px;
       border-radius: var(--radius);
       font-size: 0.9rem;
@@ -165,7 +165,7 @@
     }
     .bubble.bot strong { color: #7c5cbf; }
     .typing { padding: 14px 18px !important; }
-    .typing-content { display: flex; align-items: center; gap: 10px; }
+    .typing-content { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .typing span {
       display: inline-block;
       width: 8px; height: 8px;
@@ -176,7 +176,7 @@
     .typing span:nth-child(1) { background: #c9b8f5; }
     .typing span:nth-child(2) { background: #b5e8d8; animation-delay: .2s; }
     .typing span:nth-child(3) { background: #ffd6c0; animation-delay: .4s; }
-    .typing-text { font-size: 0.78rem; color: #a89ec0; white-space: nowrap; }
+    .typing-text { font-size: 0.78rem; color: #a89ec0; white-space: nowrap; flex: 1; display: block; margin-top: 6px; }
     .progress-wrap { margin-top: 8px; width: 100%; }
     .progress-bar-bg { background: #ede3ff; border-radius: 10px; height: 6px; width: 100%; overflow: hidden; }
     .progress-bar-fill { background: linear-gradient(90deg, #c9b8f5, #a78bdf); height: 6px; border-radius: 10px; width: 0%; transition: width 0.5s ease; }
@@ -208,7 +208,7 @@
     .example-box p { font-size: 0.78rem; color: #7c5cbf; font-weight: 700; margin-bottom: 8px; }
     .example-box ul { list-style: none; padding: 0; }
     .example-box ul li { font-size: 0.78rem; color: #8a7aaa; padding: 3px 0; line-height: 1.6; }
-    .example-box ul li::before { content: "✏️ "; }
+    .example-box ul li::before { content: '✏️ '; }
     .tip {
       margin-top: 12px;
       background: #f3f0ff;
@@ -390,19 +390,19 @@
 </div>
 
 <script>
-  const chatWindow = document.getElementById('chat-window');
-  const inputEl = document.getElementById('user-input');
-  const sendBtn = document.getElementById('send-btn');
-  let history = [];
+  const chatWindow = document.getElementById("chat-window");
+  const inputEl    = document.getElementById("user-input");
+  const sendBtn    = document.getElementById("send-btn");
+  let history      = [];
 
   function toggleSub(el, subId) {
     const sub = document.getElementById(subId);
-    const isOpen = sub.classList.contains('show');
-    document.querySelectorAll('.subtags').forEach(s => s.classList.remove('show'));
-    document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+    const isOpen = sub.classList.contains("show");
+    document.querySelectorAll(".subtags").forEach(s => s.classList.remove("show"));
+    document.querySelectorAll(".tag").forEach(t => t.classList.remove("active"));
     if (!isOpen) {
-      sub.classList.add('show');
-      el.classList.add('active');
+      sub.classList.add("show");
+      el.classList.add("active");
     }
   }
 
@@ -410,34 +410,34 @@
     inputEl.value = text;
     inputEl.focus();
     autoResize();
-    document.querySelectorAll('.subtags').forEach(s => s.classList.remove('show'));
-    document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll(".subtags").forEach(s => s.classList.remove("show"));
+    document.querySelectorAll(".tag").forEach(t => t.classList.remove("active"));
   }
 
-  inputEl.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
+  inputEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
   });
-  inputEl.addEventListener('input', autoResize);
+  inputEl.addEventListener("input", autoResize);
 
   function autoResize() {
-    inputEl.style.height = '48px';
-    inputEl.style.height = Math.min(inputEl.scrollHeight, 140) + 'px';
+    inputEl.style.height = "48px";
+    inputEl.style.height = Math.min(inputEl.scrollHeight, 140) + "px";
   }
 
   function addBubble(text, role) {
-    const row = document.createElement('div');
-    row.className = 'row ' + role;
-    if (role === 'bot') {
-      const av = document.createElement('div');
-      av.className = 'mini-avatar';
-      av.textContent = '🌱';
+    const row = document.createElement("div");
+    row.className = "row " + role;
+    if (role === "bot") {
+      const av = document.createElement("div");
+      av.className = "mini-avatar";
+      av.textContent = "🌱";
       row.appendChild(av);
     }
-    const bbl = document.createElement('div');
-    bbl.className = 'bubble ' + role;
+    const bbl = document.createElement("div");
+    bbl.className = "bubble " + role;
     bbl.innerHTML = formatText(text);
     row.appendChild(bbl);
     chatWindow.appendChild(row);
@@ -446,15 +446,15 @@
   }
 
   function addTyping() {
-    const row = document.createElement('div');
-    row.className = 'row bot';
-    row.id = 'typing-row';
-    const av = document.createElement('div');
-    av.className = 'mini-avatar';
-    av.textContent = '🌱';
+    const row = document.createElement("div");
+    row.className = "row bot";
+    row.id = "typing-row";
+    const av = document.createElement("div");
+    av.className = "mini-avatar";
+    av.textContent = "🌱";
     row.appendChild(av);
-    const bbl = document.createElement('div');
-    bbl.className = 'bubble bot typing';
+    const bbl = document.createElement("div");
+    bbl.className = "bubble bot typing";
     bbl.innerHTML = '<div class="typing-content"><span></span><span></span><span></span><span class="typing-text">답변 출력중 ... 잠시만 기다려 주세요</span></div><div class="progress-wrap"><div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-fill"></div></div><div class="progress-label" id="prog-label">0% 완료</div></div>';
     row.appendChild(bbl);
     chatWindow.appendChild(row);
@@ -463,78 +463,56 @@
   }
 
   function formatText(text) {
-    var stepStyles = [
-      { keyword: '1단계', icon: '📋', title: '상황 구체화', bg: '#e8f8f0', border: '#a8e6c8', color: '#4caf80' },
-      { keyword: '2단계', icon: '🔍', title: '원인 분석',   bg: '#d4f2e4', border: '#7dd4a8', color: '#3a9e6a' },
-      { keyword: '3단계', icon: '📚', title: '유사 사례',   bg: '#b8e8d0', border: '#52c490', color: '#2a8a58' },
-      { keyword: '4단계', icon: '💡', title: '대응 전략',   bg: '#8ed4b4', border: '#2aaa70', color: '#1a7a48' }
-    ];
-
-    var result = text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-
-    stepStyles.forEach(function(s) {
-      var regex = new RegExp('(#{1,3}\\s*)?' + s.keyword + '[^\\n]*', 'g');
-      result = result.replace(regex,
-        '<div style="background:' + s.bg + ';border-left:4px solid ' + s.border + ';border-radius:10px;padding:10px 14px;margin:10px 0;">' +
-        '<div style="font-weight:700;color:' + s.color + ';font-size:0.85rem;">' + s.keyword + ' ' + s.icon + ' ' + s.title + '</div>' +
-        '</div>'
-      );
-    });
-
-    result = result.replace(/\n/g, '<br>');
-    return result;
+    return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\n/g, "<br>");
   }
 
-  function sendMessage() {
-    var message = inputEl.value.trim();
+  async function sendMessage() {
+    const message = inputEl.value.trim();
     if (!message || sendBtn.disabled) return;
-    inputEl.value = '';
+    inputEl.value = "";
     autoResize();
     sendBtn.disabled = true;
-    addBubble(message, 'user');
-    history.push({ role: 'user', content: message });
-    var typingRow = addTyping();
-    var prog = 0;
-    var progFill = document.getElementById('prog-fill');
-    var progLabel = document.getElementById('prog-label');
-    var progInterval = setInterval(function() {
+    addBubble(message, "user");
+    history.push({ role: "user", content: message });
+    const typingRow = addTyping();
+    let prog = 0;
+    const progFill = document.getElementById("prog-fill");
+    const progLabel = document.getElementById("prog-label");
+    const progInterval = setInterval(() => {
       if (prog < 90) {
         prog += Math.random() * 8;
         if (prog > 90) prog = 90;
-        if (progFill) progFill.style.width = prog.toFixed(0) + '%';
-        if (progLabel) progLabel.textContent = prog.toFixed(0) + '% 완료';
+        if (progFill) progFill.style.width = prog.toFixed(0) + "%";
+        if (progLabel) progLabel.textContent = prog.toFixed(0) + "% 완료";
       }
     }, 600);
-
-    fetch('/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: message, history: history.slice(0, -1) })
-    })
-    .then(function(res) { return res.json(); })
-    .then(function(data) {
+    try {
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message, history: history.slice(0, -1) }),
+      });
+      const data = await res.json();
       clearInterval(progInterval);
       typingRow.remove();
       if (data.error) {
-        addBubble('오류가 발생했어요 😢 잠시 후 다시 시도해 주세요.', 'bot');
+        addBubble("오류가 발생했어요 😢 잠시 후 다시 시도해 주세요.", "bot");
       } else {
-        addBubble(data.reply, 'bot');
-        history.push({ role: 'assistant', content: data.reply });
+        addBubble(data.reply, "bot");
+        history.push({ role: "assistant", content: data.reply });
       }
-      sendBtn.disabled = false;
-      inputEl.focus();
-    })
-    .catch(function() {
+    } catch {
       clearInterval(progInterval);
       typingRow.remove();
-      addBubble('서버 연결에 실패했어요. 잠시 후 다시 시도해 주세요 🌿', 'bot');
-      sendBtn.disabled = false;
-      inputEl.focus();
-    });
+      addBubble("서버 연결에 실패했어요. 잠시 후 다시 시도해 주세요 🌿", "bot");
+    }
+    sendBtn.disabled = false;
+    inputEl.focus();
   }
 </script>
 </body>
